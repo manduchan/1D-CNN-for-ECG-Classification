@@ -1,12 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
-
-
-### Code Adopted from: https://www.kaggle.com/jacklinggu/keras-mlp-cnn-test-for-text-classification
-### and also from: https://blog.goodaudience.com/introduction-to-1d-convolutional-neural-networks-in-keras-for-time-sequences-3a7ff801a2cf
-
+#---Install Packages---
 # !pip install keras
 
 import numpy as np 
@@ -30,38 +25,16 @@ from keras import metrics
 print('import done')
 
 
-# In[2]:
 
-
-# Dataset
-
-# df = pd.read_csv('./Desktop/ECG_window_df.csv')
-
-# tags = df.Results
-# voltages = df[df.columns[3:723]]
-
-# print('Dataset before the split:')
-# print(tags.shape, voltages.shape)
-
-# # Train/Test set split
-# X_train, X_test, Y_train, Y_test = train_test_split(voltages, tags, test_size = 0.20, random_state = 0)
-# print('Train Shape:')
-# print(X_train.shape, Y_train.shape)
-# print('Test Shape:')
-# print(X_test.shape, Y_test.shape)
-
-
-# In[3]:
-
-
-# Dataframe 
+#---Dataset: Previously sectioned ECG recordings into 2-second windows---
 
 df = pd.read_csv('./Desktop/ECG_window_df.csv')
 
 print('Dataset before the split:')
 print(df.shape)
 
-# Train and Test split manually (test with patient 233 and 234 ECG windows)
+
+#---Train and Test split manually (test with patient 233 and 234 ECG windows)---
 
 train = df.iloc[0:36900] 
 test = df.iloc[-6300:]
@@ -78,43 +51,7 @@ print('Test Shape - voltages, results:')
 print(X_test.shape, Y_test.shape) 
 
 
-# In[4]:
-
-
-# # advance model
-
-# def get_model():
-#     model = Sequential()
-#     model.add(Dense(512, activation='relu', input_shape = (720,1)))
-#     model.add(Conv1D(512, 11, activation='relu'))
-#     model.add(Conv1D(512, 11, activation='relu'))
-#     model.add(Flatten())
-#     model.add(MaxPooling1D(3))
-#     model.add(Conv1D(512, 11, activation='relu'))
-#     model.add(Conv1D(512, 11, activation='relu'))
-#     model.add(GlobalAveragePooling1D())
-#     model.add(Dropout(0.5))
-#     model.add(Dense(1, activation='softmax'))
-#     model.summary()
-#     model.compile(loss='binary_crossentropy',
-#             optimizer='adam',
-#             metrics=['acc',metrics.binary_accuracy])
-#     print('compile done')
-#     return model
-
-# def check_model(model,x,y):
-#     model.fit(x,y,batch_size=32,epochs=30,verbose=1,validation_split=0.2)
-    
-# m = get_model()  # wrong, but won't run with get_model()
-# check_model(m,voltages,tags)
-
-# # model won't run without runing the simple model above. 
-
-
-# In[5]:
-
-
-# CNN Model 
+#---Model---
 
 batch = 16
 epochs = 10
@@ -152,11 +89,7 @@ cm = confusion_matrix(Y_test, y_pred1)
 cm
 
 
-
-# In[6]:
-
-
-# Saving Model
+#---Saving Model---
 
 # serialize model to JSON
 model_json = model.to_json()
@@ -166,13 +99,6 @@ with open("model.json", "w") as json_file:
 # serialize weights to HDF5
 model.save_weights("model.h5")
 print("Saved model to disk")
- 
-
-
-# In[ ]:
-
-
-# Later...Recall Model 
  
 # load json and create model
 json_file = open('model.json', 'r')
